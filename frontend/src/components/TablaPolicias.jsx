@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   Table, Thead, Tbody, Tr, Th, Td, Heading,
-  Spinner, Box, Input, Button, HStack, Flex
+  Spinner, Box, Input, Button, HStack, Flex,
+  useToast, Grid, GridItem, Text
 } from '@chakra-ui/react';
 import { getConteoPorPolicia } from '../api/reportService';
 import {exportarTablaExcel} from '../utils/export';
@@ -15,6 +16,7 @@ export default function TablaPolicias() {
   const [fecha_inicio, setFechaInicio] = useState(null);
   const [fecha_fin, setFechaFin] = useState(null);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
 
   const fetchData = () => {
     setLoading(true);
@@ -25,6 +27,18 @@ export default function TablaPolicias() {
       })
       .finally(() => setLoading(false));
   };
+
+  useEffect( () => {
+    if(fecha_fin < fecha_inicio){
+      toast({
+        title: "Error de fechas",
+        description: "Error la fecha inicio no puede ser mayor a la fecha fin",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, [fecha_inicio, fecha_fin])
 
   useEffect(() => {
     fetchData();
@@ -37,31 +51,61 @@ export default function TablaPolicias() {
       <Heading color="white" mb={4} size="md">
         Contar Registros por Policía
       </Heading>
-      <Flex gap={3} mb={4}>
-        <Input
-          placeholder="Buscar por nombre..."
-          bg="white"
-          mb={4}
-          value={search}
-          onChange={(e) => {
-            setPage(1);   
-            setSearch(e.target.value);
-          }}
-        />
-        <Input
-          type="date"
-          bg="white"
-          mr={2}
-          value={fecha_inicio || ''}
-          onChange={(e) => setFechaInicio(e.target.value)}
-        />
-        <Input
-          type="date"
-          bg="white"
-          value={fecha_fin || ''}
-          onChange={(e) => setFechaFin(e.target.value)}
-        />
-      </Flex>
+      <Grid
+        templateColumns="repeat(3, 1fr)"
+        gap={3}
+        mb={4}
+      >
+        {/* Fila de labels */}
+        <GridItem>
+          <Text fontSize="sm" fontWeight="medium">
+            Búsqueda por nombre
+          </Text>
+        </GridItem>
+
+        <GridItem>
+          <Text fontSize="sm" fontWeight="medium">
+            Fecha inicio
+          </Text>
+        </GridItem>
+
+        <GridItem>
+          <Text fontSize="sm" fontWeight="medium">
+            Fecha fin
+          </Text>
+        </GridItem>
+
+        {/* Fila de inputs */}
+        <GridItem>
+          <Input
+            placeholder="Buscar por nombre..."
+            bg="white"
+            value={search}
+            onChange={(e) => {
+              setPage(1);
+              setSearch(e.target.value);
+            }}
+          />
+        </GridItem>
+
+        <GridItem>
+          <Input
+            type="date"
+            bg="white"
+            value={fecha_inicio || ""}
+            onChange={(e) => setFechaInicio(e.target.value)}
+          />
+        </GridItem>
+
+        <GridItem>
+          <Input
+            type="date"
+            bg="white"
+            value={fecha_fin || ""}
+            onChange={(e) => setFechaFin(e.target.value)}
+          />
+        </GridItem>
+      </Grid>
       {loading ? (
         <Spinner />
       ) : (

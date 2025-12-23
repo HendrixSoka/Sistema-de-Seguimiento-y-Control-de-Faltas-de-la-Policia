@@ -6,6 +6,7 @@ import FaltasLeves from '../pages/FaltaLevesPage';
 import Delitos from '../pages/DelitosPage';
 import Usuarios from '../pages/ManagementUsersPage';
 import HistorialCambios from '../pages/LogsPage';
+import StatisticsPage from '../pages/StatisticsPage';
 import ProtectedRoute from './ProtectedRoutes';
 export default function AppRoutes() {
   return (
@@ -46,6 +47,14 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <Delitos />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Estadisticas"
+        element={
+          <ProtectedRoute>
+            <StatisticsPage />
           </ProtectedRoute>
         }
       />

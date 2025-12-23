@@ -143,7 +143,7 @@ export default function ManagementUsersPage() {
 
   return (
     <Box p={8}>
-      <Heading mb={6} color="green.700">
+      <Heading mb={6} color="white">
         Gestionar Usuarios
       </Heading>
 
